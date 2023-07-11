@@ -1,29 +1,39 @@
 import { Modal } from './modal/Modal';
 import { SearchBar } from './searchBar/SearchBar';
 import { ImageGallery } from './imageGallery/ImageGallery';
-import { useState } from 'react';
+import { Component } from 'react';
 
-export function App() {
-  const [showModal, setShowModal] = useState(false);
-  const [inputValue, setInputValue] = useState('');
-  const [modalImg, setModalImg] = useState('');
-
-  const handleFormSubmit = inputValue => {
-    setInputValue(inputValue);
+export class App extends Component {
+  state = {
+    showModal: false,
+    inputValue: '',
+    modalImg: '',
   };
 
-  const toggleModal = largeImageURL => {
-    setShowModal(prevShowModal => !prevShowModal);
-    setModalImg(largeImageURL);
+  handleFormSubmit = inputValue => {
+    this.setState({ inputValue });
   };
 
-  return (
-    <div>
-      <SearchBar onSubmit={handleFormSubmit} />
-      <ImageGallery inputValue={inputValue} showModal={toggleModal} />
+  toggleModal = largeImageURL => {
+    this.setState(state => ({
+      showModal: !state.showModal,
+      modalImg: largeImageURL,
+    }));
+  };
+
+  render() {
+    const { showModal, inputValue, modalImg } = this.state;
+
+    return (
       <div>
-        {showModal && <Modal onClose={toggleModal} modalImg={modalImg} />}
+        <SearchBar onSubmit={this.handleFormSubmit} />
+        <ImageGallery inputValue={inputValue} showModal={this.toggleModal} />
+        <div>
+          {showModal && (
+            <Modal onClose={this.toggleModal} modalImg={modalImg} />
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }

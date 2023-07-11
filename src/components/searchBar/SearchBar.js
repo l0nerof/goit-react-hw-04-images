@@ -1,42 +1,46 @@
 import css from './SearchBar.module.css';
-import { useState } from 'react';
+import { Component } from 'react';
 
-export function SearchBar({ onSubmit }) {
-  const [inputValue, setInputValue] = useState('');
-
-  const handleInputValueChange = event => {
-    setInputValue(event.currentTarget.value.toLowerCase());
+export class SearchBar extends Component {
+  state = {
+    inputValue: '',
   };
 
-  const handleSubmit = event => {
+  handleInputValueChange = event => {
+    this.setState({ inputValue: event.currentTarget.value.toLowerCase() });
+  };
+
+  handleSubmit = event => {
     event.preventDefault();
 
-    if (inputValue.trim() === '') {
+    if (this.state.inputValue.trim() === '') {
       alert('Put more informartion');
       return;
     }
 
-    onSubmit(inputValue);
-    setInputValue('');
+    this.props.onSubmit(this.state.inputValue);
+    this.setState({ inputValue: '' });
   };
 
-  return (
-    <header className={css.Searchbar}>
-      <form className={css.Form} onSubmit={handleSubmit}>
-        <button type="submit" className={css.FormButton}>
-          <span className={css.FormButtonLabel}>Search</span>
-        </button>
+  render() {
+    return (
+      <header className={css.Searchbar}>
+        <form className={css.Form} onSubmit={this.handleSubmit}>
+          <button type="submit" className={css.FormButton}>
+            <span className={css.FormButtonLabel}>Search</span>
+          </button>
 
-        <input
-          className={css.FormInput}
-          type="text"
-          autoComplete="off"
-          autoFocus
-          value={inputValue}
-          onChange={handleInputValueChange}
-          placeholder="Search images and photos"
-        />
-      </form>
-    </header>
-  );
+          <input
+            className={css.FormInput}
+            type="text"
+            autoComplete="off"
+            autoFocus
+            value={this.state.inputValue}
+            onChange={this.handleInputValueChange}
+            placeholder="Search images and photos"
+          />
+        </form>
+      </header>
+    );
+  }
 }
